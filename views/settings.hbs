@@ -1,0 +1,29 @@
+<script>
+	let defaultTz = "{{TIMEZONE}}";
+	$(function() {
+		let tzs = _.filter(moment.tz.names(),function(tz) {
+			return tz.indexOf('America/') >= 0;
+		});
+
+		let $timezone = $("#timezone");
+		_.each(tzs,function(tz) {
+			$timezone.append($("<option>").val(tz).text(tz));
+		});
+		$timezone.find("option[value='" + defaultTz + "']").attr("selected","selected");
+	});
+</script>
+
+<div class="container">
+	<h1>Settings</h1>
+
+	<form action="/settings" method="post">
+		<div class="form-group">
+			<label class="control-label" for="timezone">Timezone</label>
+			<select id="timezone" name="timezone" class="form-control"></select>
+		</div>
+
+		<div class="pull-right">
+			<button class="btn btn-primary" type="submit">Submit</button>
+		</div>
+	</form>
+</div>

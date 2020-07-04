@@ -1,0 +1,40 @@
+<style>
+	a[data-role] {
+		cursor: pointer;
+	}
+	a[data-role="deleteBtn"] {
+		color: red;
+	}
+</style>
+
+<script async src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.6/handlebars.min.js" integrity="sha256-usTqAE1ywvdMtksWzdeWzD75MsfJN0h0U7y2NtZL3N0=" crossorigin="anonymous"></script>
+<script async src="https://cdnjs.cloudflare.com/ajax/libs/libphonenumber-js/1.7.53/libphonenumber-js.min.js" integrity="sha256-2C8Fc9bR+CG0+ZzPWyZcP+xMWrh+0eY/qvExPemPkpk=" crossorigin="anonymous"></script>
+<script src="/js/modals/ConfirmActionModal.js"></script>
+<script src="/js/modals/CreateEditDeviceModal.js"></script>
+<script src="/js/widgets/Component.DeviceListWidget.js"></script>
+<script src="/js/devices.js"></script>
+
+<div class="container">
+	<div class="clearfix">
+		<h1 class="pull-left">Devices</h1>
+
+		<div class="h1 pull-right">
+			<button class="btn btn-primary" id="createDeviceBtn">Create Device</button>
+		</div>
+	</div>
+
+	<div class="table-responsive" id="deviceListWidget">
+		<table class="table table-bordered table-striped">
+			<thead>
+				<tr>
+					<th>Name</th>
+					<th>Description</th>
+					<th>Phone Number</th>
+					<th>Actions</th>
+				</tr>
+			</thead>
+			<tbody>
+			</tbody>
+		</table>
+	</div>
+</div>

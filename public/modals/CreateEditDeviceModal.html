@@ -1,0 +1,35 @@
+<div class="modal fade" tabindex="-1" role="dialog">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title">Create Device</h4>
+			</div>
+			<div class="modal-body">
+				<div class="alert alert-danger hide" id="errorContainer"><ul></ul></div>
+
+				<div class="form-group">
+					<label class="control-label" for="name">Name</label>
+					<input type="text" id="name" class="form-control" required maxlength="45" pattern="[a-zA-Z0-9 ]" placeholder="Device Name">
+				</div>
+
+				<div class="form-group">
+					<label class="control-label" for="description">Description</label>
+					<textarea id="description" class="form-control" maxlength="500" placeholder="Device Description"></textarea>
+				</div>
+
+				<div class="form-group">
+					<label class="control-label" for="phoneNumber">Phone Number</label>
+					<div class="input-group">
+						<span class="input-group-addon">+1</span>
+						<input type="tel" id="phoneNumber" class="form-control" required placeholder="(nnn) nnn-nnnn">
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-primary" id="createBtn">Create</button>
+			</div>
+		</div>
+	</div>
+</div>

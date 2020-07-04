@@ -1,0 +1,6 @@
+.env
+node_modules/
+.idea/
+app.db
+*.min.js
+*.min.css

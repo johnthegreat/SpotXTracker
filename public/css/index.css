@@ -1,0 +1,22 @@
+html, body {
+    margin: 0;
+    padding: 0;
+}
+
+#map-canvas {
+    height: 500px;
+    width: 100%;
+}
+
+#checkInsListWidget {
+    margin-top: 20px;
+}
+
+a[data-role='viewOnMapBtn'] {
+    cursor: pointer;
+}
+
+a[data-role='deleteBtn'] {
+    cursor: pointer;
+    color: #ff0000;
+}

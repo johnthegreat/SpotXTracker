@@ -1,0 +1,35 @@
+<link rel="stylesheet" href="/css/index{{#eq env 'PROD'}}.min{{/eq}}.css">
+
+<script async src="https://maps.googleapis.com/maps/api/js?key={{googleMapsApiKey}}&libraries=places"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.26.0/moment.min.js" integrity="sha256-5oApc/wMda1ntIEK4qoWJ4YItnV4fBHMwywunj8gPqc=" crossorigin="anonymous"></script>
+<script async src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.31/moment-timezone-with-data.min.js" integrity="sha256-E10X63Z5YvTXDfZjb0Kqd7FOo6a/gE7hFGcYm63PLmM=" crossorigin="anonymous"></script>
+<script async src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.6/handlebars.min.js" integrity="sha256-usTqAE1ywvdMtksWzdeWzD75MsfJN0h0U7y2NtZL3N0=" crossorigin="anonymous"></script>
+
+<script>
+	const TIMEZONE = "{{TIMEZONE}}";
+</script>
+<script src="/js/modals/ConfirmActionModal{{#eq env 'PROD'}}.min{{/eq}}.js"></script>
+<script src="/js/widgets/Component.CheckInsListWidget{{#eq env 'PROD'}}.min{{/eq}}.js"></script>
+<script src="/js/index{{#eq env 'PROD'}}.min{{/eq}}.js"></script>
+
+<div class="container">
+	<h1>Check-Ins</h1>
+	<div id="map-canvas"></div>
+
+	<div id="checkInsListWidget" class="table-responsive">
+		<table class="table table-bordered table-striped">
+			<thead>
+				<tr>
+					<th>Source</th>
+					<th>Message</th>
+					<th>Position</th>
+					<th>Timestamp</th>
+					<th>Map URL</th>
+					<th>View</th>
+					<th>Delete</th>
+				</tr>
+			</thead>
+			<tbody></tbody>
+		</table>
+	</div>
+</div>
