@@ -35,7 +35,7 @@ exports.post = async function (req,res) {
 	/**
 	 * @type {Device}
 	 */
-	const device = await deviceProvider.getDeviceByPhoneNumber(req.body.From.replace('+1',''));
+	const device = await deviceProvider.getDeviceByPhoneNumber(req.body.From);
 	if (device === null) {
 		res.status(204).send();
 		return;

@@ -124,7 +124,7 @@ DeviceProvider.prototype.getDeviceByPhoneNumber = function(phoneNumber) {
  */
 DeviceProvider.prototype.updateDevice = function(device) {
 	return new Promise(function(resolve,reject) {
-		db.run('UPDATE `device` SET `name` = ?, `description` = ?, `phoneNumber` = ? WHERE `uuid` = ?',[],function(err) {
+		db.run('UPDATE `device` SET `name` = ?, `description` = ?, `phoneNumber` = ? WHERE `uuid` = ?',[device.name,device.description,device.phoneNumber,device.uuid],function(err) {
 			if (err) {
 				return reject(err);
 			}

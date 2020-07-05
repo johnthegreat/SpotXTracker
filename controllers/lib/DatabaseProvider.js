@@ -16,10 +16,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/**
- * Load environment variables from .env file, where API keys and passwords are configured.
- */
-require('dotenv').config({ path: '.env' });
 const sqlite3 = require('sqlite3').verbose();
 
 const db = new sqlite3.Database(process.env.SQLITE_DB_PATH);

@@ -55,6 +55,9 @@ const DeviceListWidget = function(element) {
 			title: 'Update Device',
 			saveBtnText: 'Update',
 			saveCallback: function(device) {
+				if (device.phoneNumber) {
+					device.phoneNumber = convertPhoneNumberToE164(device.phoneNumber);
+				}
 				updateDevice(device).then(function(_device) {
 					this.updateDeviceByUuid(device);
 				}.bind(this));

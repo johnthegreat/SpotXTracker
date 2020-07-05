@@ -7,12 +7,14 @@
 	}
 </style>
 
+<script async src="https://cdnjs.cloudflare.com/ajax/libs/cleave.js/1.6.0/cleave.min.js" integrity="sha512-KaIyHb30iXTXfGyI9cyKFUIRSSuekJt6/vqXtyQKhQP6ozZEGY8nOtRS6fExqE4+RbYHus2yGyYg1BrqxzV6YA==" crossorigin="anonymous"></script>
+<script async src="https://cdnjs.cloudflare.com/ajax/libs/countable/3.0.1/Countable.min.js" integrity="sha512-ssL9tXYOtj4MLNTZnD6+lcAos+GHlnyCO0x7ctQXqzrmO48pFfNc/qAo+jIckEFGUHYr0RCtbVMbxiGgJCvmxA==" crossorigin="anonymous"></script>
 <script async src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.6/handlebars.min.js" integrity="sha256-usTqAE1ywvdMtksWzdeWzD75MsfJN0h0U7y2NtZL3N0=" crossorigin="anonymous"></script>
 <script async src="https://cdnjs.cloudflare.com/ajax/libs/libphonenumber-js/1.7.53/libphonenumber-js.min.js" integrity="sha256-2C8Fc9bR+CG0+ZzPWyZcP+xMWrh+0eY/qvExPemPkpk=" crossorigin="anonymous"></script>
-<script src="/js/modals/ConfirmActionModal.js"></script>
-<script src="/js/modals/CreateEditDeviceModal.js"></script>
-<script src="/js/widgets/Component.DeviceListWidget.js"></script>
-<script src="/js/devices.js"></script>
+<script async src="/js/modals/ConfirmActionModal{{#eq env 'PROD'}}.min{{/eq}}.js"></script>
+<script async src="/js/modals/CreateEditDeviceModal{{#eq env 'PROD'}}.min{{/eq}}.js"></script>
+<script async src="/js/widgets/Component.DeviceListWidget{{#eq env 'PROD'}}.min{{/eq}}.js"></script>
+<script src="/js/devices{{#eq env 'PROD'}}.min{{/eq}}.js"></script>
 
 <div class="container">
 	<div class="clearfix">

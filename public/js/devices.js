@@ -97,6 +97,9 @@ $(window).on('load',function() {
 		const createDeviceModal = new CreateEditDeviceModal({
 			mode: 'Create',
 			saveCallback: function(device) {
+				if (device.phoneNumber) {
+					device.phoneNumber = convertPhoneNumberToE164(device.phoneNumber);
+				}
 				createDevice(device).then(function(_device) {
 					deviceListWidget.addDevice(_device);
 				});

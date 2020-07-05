@@ -36,11 +36,6 @@ require('handlebars-helpers')({
 
 const createUuid = require('./utils/createUuid');
 
-/**
- * Load environment variables from .env file, where API keys and passwords are configured.
- */
-require('dotenv').config({ path: '.env' });
-
 const memoryStore = new MemoryStore({
 	checkPeriod: 86400000 // prune expired entries every 24h
 });
@@ -129,15 +124,9 @@ const rateLimitMiddleware = function (pts) {
 	};
 };
 
-app.get('/',function (req,res,next) {
-	rateLimitMiddleware(1)(req,res,next);
-});
-app.get('/login',function (req,res,next) {
-	rateLimitMiddleware(1)(req,res,next);
-});
-app.post('/login',function (req,res,next) {
-	rateLimitMiddleware(6)(req,res,next);
-});
+app.get('/',rateLimitMiddleware(1));
+app.get('/login',rateLimitMiddleware(1));
+app.post('/login',rateLimitMiddleware(6));
 
 require('./setupRoutes')(app);
 

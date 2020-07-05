@@ -96,6 +96,23 @@ function CreateEditDeviceModal(opts) {
 		}
 
 		$errorContainer = this.element.find('#errorContainer');
+
+		const onDescriptionCountable = function(counter) {
+			this.element.find('#descriptionCharCountContainer').find('.charsUsed').text(counter.all);
+		}.bind(this);
+		// Set maximum number of characters for Description field
+		this.element.find('#descriptionCharCountContainer').find('.charsMax').text(500);
+		// Update chars used count for Description field on input
+		Countable.on(this.element.find('#description').get(0),onDescriptionCountable);
+		if (opts.mode === 'Edit') {
+			Countable.count(this.element.find('#description').get(0),onDescriptionCountable);
+		}
+
+		new Cleave(this.element.find('#phoneNumber').get(0), {
+			numericOnly: true,
+			blocks: [0, 3, 0, 3, 4],
+			delimiters: ["(", ")", " ", "-"],
+		});
 	}.bind(this);
 
 	this.show = function() {

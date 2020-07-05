@@ -18,6 +18,10 @@
  */
 
 /**
+ * Load environment variables from .env file, where API keys and passwords are configured.
+ */
+require('dotenv').config({ path: '.env' });
+/**
  * Module dependencies.
  */
 const http = require('http');
