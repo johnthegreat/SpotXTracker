@@ -19,8 +19,7 @@ Upload, track, and share your Spot X's coordinates.
 1. Clone or download the repo.
 2. Run `npm install`.
 3. Configure environment variables in `.env`. See `.env.example` for configuration options.
-4. Setup the SQLite database. Execute `Install.sql`. 
-5. Run `npm start` or `node bin/www`. For additional debugging information, try `DEBUG=* node bin/www`.
+4. Run `npm start` or `node bin/www`. For additional debugging information, try `DEBUG=* node bin/www`. The application will automatically set up the database for you.
 
 ### Configuration
 

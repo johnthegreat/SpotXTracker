@@ -34,6 +34,10 @@ require('handlebars-helpers')({
 	handlebars: hbs.handlebars
 });
 
+(async function() {
+	await require('./runSetupScriptsIfNecessary')();
+}());
+
 const createUuid = require('./utils/createUuid');
 
 const memoryStore = new MemoryStore({
