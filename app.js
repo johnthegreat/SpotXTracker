@@ -129,8 +129,8 @@ const rateLimitMiddleware = function (pts) {
 };
 
 app.get('/',rateLimitMiddleware(1));
-app.get('/login',rateLimitMiddleware(1));
-app.post('/login',rateLimitMiddleware(6));
+app.get('/login',rateLimitMiddleware(1),lusca.csrf());
+app.post('/login',rateLimitMiddleware(6),lusca.csrf());
 
 require('./setupRoutes')(app);
 
