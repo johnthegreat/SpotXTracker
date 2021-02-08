@@ -110,7 +110,8 @@ exports.updateDevice = async function(req,res) {
 		device = await deviceProvider.updateDevice(device);
 		res.status(200).send(device);
 	} catch (err) {
-		res.status(500).send(err);
+		console.error(err);
+		res.status(500).send('Internal Error');
 	}
 };
 
@@ -130,7 +131,8 @@ exports.deleteDevice = async function(req,res) {
 
 		res.status(204).send();
 	} catch (err) {
-		res.status(500).send(err);
+		console.error(err);
+		res.status(500).send('Internal Error');
 	}
 };
 

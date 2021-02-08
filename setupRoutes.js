@@ -47,6 +47,9 @@ const setupRoutes = function(app) {
 	app.get('/settings',isAuthenticated,settingsController.getSettings);
 	app.post('/settings',isAuthenticated,settingsController.postSettings);
 
+	// Note: API endpoints are not truly RESTful since they require state (being logged in)
+	// We could add API Key functionality later
+
 	const apiLocationController = require('./controllers/api/location');
 	app.get('/api/location',isAuthenticated,apiLocationController.getLocations);
 	app.delete('/api/location/:uuid',isAuthenticated,apiLocationController.deleteLocation);

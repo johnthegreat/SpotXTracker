@@ -55,7 +55,7 @@ See `API Endpoints.md`.
 
 ### License
 
-Copyright &copy; 2020 John Nahlen.
+Copyright &copy; 2020-2021 John Nahlen.
 
 Released under [AGPL 3.0](https://www.gnu.org/licenses/agpl-3.0.en.html).
 See `LICENSE.md`.

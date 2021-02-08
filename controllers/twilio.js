@@ -32,34 +32,39 @@ exports.post = async function (req,res) {
 		return;
 	}
 
-	/**
-	 * @type {Device}
-	 */
-	const device = await deviceProvider.getDeviceByPhoneNumber(req.body.From);
-	if (device === null) {
-		res.status(204).send();
-		return;
-	}
-
-	const text = req.body.Body.trim();
-	const matches = regExp.exec(text);
-	if (matches.length > 0) {
-		const gpsCheckInLocation = new GpsCheckInLocation();
-		gpsCheckInLocation.uuid = createUuid();
-		gpsCheckInLocation.source = device.name;
-		gpsCheckInLocation.message = matches[1].trim();
-		gpsCheckInLocation.lat = matches[2].trim();
-		gpsCheckInLocation.lng = matches[3].trim();
-		if (matches[4] !== undefined && matches[5] !== undefined && matches[6] !== undefined) {
-			gpsCheckInLocation.altMeters = matches[5].trim();
-			gpsCheckInLocation.altFeet = matches[6].trim();
+	try {
+		/**
+		 * @type {Device}
+		 */
+		const device = await deviceProvider.getDeviceByPhoneNumber(req.body.From);
+		if (device === null) {
+			res.status(204).send();
+			return;
 		}
-		gpsCheckInLocation.mapUrl = matches[7].trim();
-		gpsCheckInLocation.timestamp = moment.utc().format('YYYY-MM-DD HH:mm:ss');
 
-		await gpsLocationProvider.createGpsLocation(gpsCheckInLocation);
+		const text = req.body.Body.trim();
+		const matches = regExp.exec(text);
+		if (matches.length > 0) {
+			const gpsCheckInLocation = new GpsCheckInLocation();
+			gpsCheckInLocation.uuid = createUuid();
+			gpsCheckInLocation.source = device.name;
+			gpsCheckInLocation.message = matches[1].trim();
+			gpsCheckInLocation.lat = matches[2].trim();
+			gpsCheckInLocation.lng = matches[3].trim();
+			if (matches[4] !== undefined && matches[5] !== undefined && matches[6] !== undefined) {
+				gpsCheckInLocation.altMeters = matches[5].trim();
+				gpsCheckInLocation.altFeet = matches[6].trim();
+			}
+			gpsCheckInLocation.mapUrl = matches[7].trim();
+			gpsCheckInLocation.timestamp = moment.utc().format('YYYY-MM-DD HH:mm:ss');
+
+			await gpsLocationProvider.createGpsLocation(gpsCheckInLocation);
+		}
+		res.status(204).send();
+	} catch (err) {
+		console.error(err);
+		res.status(500).send('Internal Error');
 	}
-	res.status(204).send();
 };
 
 module.exports = exports;

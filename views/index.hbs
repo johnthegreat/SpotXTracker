@@ -1,16 +1,17 @@
-<link rel="stylesheet" href="/css/index{{#eq env 'PROD'}}.min{{/eq}}.css">
+<link rel="stylesheet" href="/css/index{{#eq env 'production'}}.min{{/eq}}.css">
 
 <script async src="https://maps.googleapis.com/maps/api/js?key={{googleMapsApiKey}}&libraries=places"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.26.0/moment.min.js" integrity="sha256-5oApc/wMda1ntIEK4qoWJ4YItnV4fBHMwywunj8gPqc=" crossorigin="anonymous"></script>
-<script async src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.31/moment-timezone-with-data.min.js" integrity="sha256-E10X63Z5YvTXDfZjb0Kqd7FOo6a/gE7hFGcYm63PLmM=" crossorigin="anonymous"></script>
+{{! Last Checked for Updates: 2/7/2021 }}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js" integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ==" crossorigin="anonymous"></script>
+<script async src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.33/moment-timezone.min.js" integrity="sha512-jkvef+BAlqJubZdUhcyvaE84uD9XOoLR3e5GGX7YW7y8ywt0rwcGmTQHoxSMRzrJA3+Jh2T8Uy6f8TLU3WQhpQ==" crossorigin="anonymous"></script>
 <script async src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.6/handlebars.min.js" integrity="sha256-usTqAE1ywvdMtksWzdeWzD75MsfJN0h0U7y2NtZL3N0=" crossorigin="anonymous"></script>
 
 <script>
 	const TIMEZONE = "{{TIMEZONE}}";
 </script>
-<script src="/js/modals/ConfirmActionModal{{#eq env 'PROD'}}.min{{/eq}}.js"></script>
-<script src="/js/widgets/Component.CheckInsListWidget{{#eq env 'PROD'}}.min{{/eq}}.js"></script>
-<script src="/js/index{{#eq env 'PROD'}}.min{{/eq}}.js"></script>
+<script src="/js/modals/ConfirmActionModal{{#eq env 'production'}}.min{{/eq}}.js"></script>
+<script src="/js/widgets/Component.CheckInsListWidget{{#eq env 'production'}}.min{{/eq}}.js"></script>
+<script src="/js/index{{#eq env 'production'}}.min{{/eq}}.js"></script>
 
 <div class="container">
 	<h1>Check-Ins</h1>

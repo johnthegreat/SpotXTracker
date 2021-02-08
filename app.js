@@ -16,8 +16,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-const express = require('express');
+// Module dependencies
 const path = require('path');
+const express = require('express');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const helmet = require('helmet');
@@ -28,11 +29,15 @@ const lusca = require('lusca');
 const bodyParser = require('body-parser');
 const _ = require('lodash');
 const RateLimiterMemory = require('rate-limiter-flexible').RateLimiterMemory;
+const rfs = require("rotating-file-stream");
 const hbs = require('hbs');
 // https://github.com/pillarjs/hbs
 require('handlebars-helpers')({
 	handlebars: hbs.handlebars
 });
+
+// Utilities
+const isProduction = require('./utils/isProduction');
 
 (async function() {
 	await require('./runSetupScriptsIfNecessary')();
@@ -76,7 +81,11 @@ app.use(function (req,res,next) {
 	next();
 });
 app.use(function (req,res,next) {
-	res.locals.env = process.env.ENV;
+	res.locals.env = process.env.NODE_ENV;
+	next();
+});
+app.use(function(req,res,next) {
+	res.locals.req = req;
 	next();
 });
 
@@ -92,10 +101,21 @@ app.use(function (req,res,next) {
 	next();
 });
 
-app.use(compression({
-	level: 9
-}));
-app.use(logger('short'));
+// Setup logging if production environment
+if (isProduction()) {
+	// https://www.npmjs.com/package/rotating-file-stream
+	const accessLogStream = rfs.createStream('access.log',{
+		interval: '1d', // rotate daily
+		path: process.env.logsDir,
+		compress: true,
+		maxFiles: 30
+	});
+	app.use(logger('combined',{
+		stream: accessLogStream
+	}));
+}
+
+app.use(compression());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
@@ -110,12 +130,15 @@ app.get('/js/*',cacheControlMiddleware);
 app.get('/css/*',cacheControlMiddleware);
 app.get('/modals/*',cacheControlMiddleware);
 
+// Temporarily block clients who are hitting the POST /login endpoint too many times, probably a script
+// Essentially limits online attackers to 50 requests a day per IP.
+// Although I really don't see users logging in more than 5-10 times a day at most (possibly using different devices)
 const rateLimiter = new RateLimiterMemory({
 	storeClient: memoryStore,
 	keyPrefix: 'middleware',
-	points: 30, // 30 requests
-	duration: 60, // per 60 seconds by IP
-	blockDuration: 60 // block for one minute
+	points: 50, // 50 requests
+	duration: 86400, // per day by IP
+	blockDuration: 86400 // block for one day
 });
 
 const rateLimitMiddleware = function (pts) {
@@ -128,21 +151,31 @@ const rateLimitMiddleware = function (pts) {
 	};
 };
 
-app.get('/',rateLimitMiddleware(1));
-app.get('/login',rateLimitMiddleware(1),lusca.csrf());
-app.post('/login',rateLimitMiddleware(6),lusca.csrf());
+app.get('/login',lusca.csrf());
+app.post('/login',rateLimitMiddleware(1),lusca.csrf());
 
 require('./setupRoutes')(app);
 
 // catch 404
 app.use(function (req,res) {
-	res.status(404).send('Not Found');
+	res.status(404).render('404');
 });
+
+/* Some error messages may contain sensitive information (e.g. database credentials, queries, etc.).
+ * Show a generic error message unless an error message is explicitly allowed.
+ */
+function getErrorMessage(err) {
+	const allowedErrorMessages = ['CSRF token mismatch','CSRF token missing'];
+	if (allowedErrorMessages.indexOf(err.message) >= 0) {
+		return err.message;
+	}
+	return 'Internal Error';
+}
 
 // error handler
 app.use(function (err,req,res,next) {
-	console.error(err);
-	res.status(err.status || 500).send('Internal Error');
+	console.log(arguments);
+	res.status(err.status || 500).render('error',{ message: getErrorMessage(err), error: err });
 });
 
 module.exports = app;

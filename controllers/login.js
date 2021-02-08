@@ -16,8 +16,26 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+// Module dependencies
+const path = require('path');
 const _ = require('lodash');
-const chalk = require('chalk');
+const winston = require('winston');
+
+// Utilities
+const isProduction = require('../utils/isProduction');
+
+const logger = winston.createLogger({
+	level: 'info',
+	format: winston.format.combine(winston.format.timestamp(),winston.format.json()),
+	transports: []
+});
+
+if (isProduction()) {
+	logger.add(new winston.transports.File({ filename: process.env.logsDir + '/logins.log' }));
+} else {
+	logger.add(new winston.transports.Console());
+}
+
 
 /**
  *
@@ -44,12 +62,14 @@ exports.postLogin = function(req,res) {
 
 	const accessToken = req.body.accessToken;
 	if (accessToken === process.env.authToken) {
-		console.log(chalk.green(req.ip + ' - Login Successful.'));
+		logger.log('info','Login Successful',{ ip: req.ip });
 		req.session.authToken = req.body.accessToken;
 		res.redirect('/');
 	} else {
-		console.log(chalk.red(req.ip + ' - Login Attempted: "' + req.body.accessToken + '"'));
-		res.redirect('/login');
+		logger.log('info','Login Failed',{ ip: req.ip, accessToken: accessToken });
+		res.render('login',{
+			loginErrorMessage: 'Invalid access token, please try again.'
+		});
 	}
 };
 
