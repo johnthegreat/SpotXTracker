@@ -62,7 +62,10 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(session({
 	resave: false,
 	saveUninitialized: false,
-	cookie: { maxAge: 86400000 },
+	cookie: {
+		maxAge: 86400000,
+		sameSite: 'strict'
+	},
 	store: memoryStore,
 	secret: createUuid()
 }));
@@ -107,13 +110,13 @@ if (isProduction()) {
 	const accessLogStream = rfs.createStream('access.log',{
 		interval: '1d', // rotate daily
 		path: process.env.logsDir,
-		compress: true,
 		maxFiles: 30
 	});
 	app.use(logger('combined',{
 		stream: accessLogStream
 	}));
 }
+
 
 app.use(compression());
 app.use(express.json());
@@ -152,7 +155,7 @@ const rateLimitMiddleware = function (pts) {
 };
 
 app.get('/login',lusca.csrf());
-app.post('/login',rateLimitMiddleware(1),lusca.csrf());
+app.post('/login',lusca.csrf(), rateLimitMiddleware(1));
 
 require('./setupRoutes')(app);
 
@@ -161,20 +164,33 @@ app.use(function (req,res) {
 	res.status(404).render('404');
 });
 
+const allowedErrorMessages = ['CSRF token mismatch','CSRF token missing'];
 /* Some error messages may contain sensitive information (e.g. database credentials, queries, etc.).
  * Show a generic error message unless an error message is explicitly allowed.
  */
 function getErrorMessage(err) {
-	const allowedErrorMessages = ['CSRF token mismatch','CSRF token missing'];
 	if (allowedErrorMessages.indexOf(err.message) >= 0) {
 		return err.message;
 	}
 	return 'Internal Error';
 }
 
+const isCsrfTokenError = function(err) {
+	return err.message && (err.message === 'CSRF token mismatch' || err.message === 'CSRF token missing');
+}
+
 // error handler
 app.use(function (err,req,res,next) {
-	console.log(arguments);
+	const _isCsrfTokenError = isCsrfTokenError(err);
+	if (err && !_isCsrfTokenError) {
+		// This is not a CSRF error
+		console.error(err);
+	}
+
+	if (_isCsrfTokenError) {
+		err.status = 400; // 400 Bad Request
+	}
+
 	res.status(err.status || 500).render('error',{ message: getErrorMessage(err), error: err });
 });
 

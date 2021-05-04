@@ -67,7 +67,7 @@ exports.postLogin = function(req,res) {
 		res.redirect('/');
 	} else {
 		logger.log('info','Login Failed',{ ip: req.ip, accessToken: accessToken });
-		res.render('login',{
+		res.status(401).render('login',{
 			loginErrorMessage: 'Invalid access token, please try again.'
 		});
 	}
