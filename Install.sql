@@ -20,7 +20,7 @@ CREATE TABLE "device"
             primary key,
     name VARCHAR(45),
     description TEXT,
-    phoneNumber VARCHAR(12) not null
+    phoneNumber VARCHAR(12) null
 );
 
 CREATE UNIQUE INDEX device_name_uindex

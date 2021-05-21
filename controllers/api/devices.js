@@ -37,11 +37,11 @@ function validateDevice(device) {
 		error = 'Device name is required.';
 	} else if (device.name.length > 45) {
 		error = 'Device name is too many characters.';
-	} else if (device.description.length > 500) {
+	} else if (device.description && device.description.length > 500) {
 		error = 'Device description is too many characters.';
-	} else if (device.phoneNumber.trim().length === 0) {
+	} else if (device.phoneNumber && device.phoneNumber.trim().length === 0) {
 		error = 'Device phone number is required.';
-	} else if (device.phoneNumber.length > 12) {
+	} else if (device.phoneNumber && device.phoneNumber.length > 12) {
 		error = 'Device phone number is too many characters.';
 	}
 

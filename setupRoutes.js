@@ -28,6 +28,14 @@ const isAuthenticated = function(req,res,next) {
 	}
 };
 
+const apiKeyAuthenticated = function(req,res,next) {
+	if (req.query && req.query.key && req.query.key === process.env.API_KEY) {
+		next();
+	} else {
+		res.status(401).send();
+	}
+}
+
 const setupRoutes = function(app) {
 	const homeController = require('./controllers/home');
 	app.get('/',isAuthenticated,homeController.getHome);
@@ -39,6 +47,9 @@ const setupRoutes = function(app) {
 
 	const twilioController = require('./controllers/twilio');
 	app.post('/twilio',twilioController.post);
+
+	const uploadController = require('./controllers/upload');
+	app.post('/upload',apiKeyAuthenticated,uploadController.upload);
 
 	const devicesController = require('./controllers/devices');
 	app.get('/devices',isAuthenticated,devicesController.getDevices);

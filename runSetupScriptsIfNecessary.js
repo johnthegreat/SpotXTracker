@@ -42,7 +42,7 @@ const runSetupScriptsIfNecessary = async function () {
 		}
 
 		if (!deviceTableExists) {
-			db.run('CREATE TABLE "device"\n(\n    uuid TEXT(36)\n        constraint device_pk\n            primary key,\n    name VARCHAR(45),\n    description TEXT,\n    phoneNumber VARCHAR(12) not null\n)');
+			db.run('CREATE TABLE "device"\n(\n    uuid TEXT(36)\n        constraint device_pk\n            primary key,\n    name VARCHAR(45),\n    description TEXT,\n    phoneNumber VARCHAR(12) null\n)');
 
 			db.run('CREATE UNIQUE INDEX device_name_uindex\n    on device (name);');
 

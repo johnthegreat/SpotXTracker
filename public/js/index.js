@@ -51,7 +51,7 @@ $(window).on('load',function() {
 					let gpsLat = checkInData['lat'];
 					let gpsLng = checkInData['lng'];
 					let timestamp = moment.utc(checkInData['timestamp'],"YYYY-MM-DD HH:mm:ss").tz(TIMEZONE).format("MMM DD, YYYY hh:mm:ss A");
-					markersByUuid[checkInData['uuid']] = addPoint(gpsLat, gpsLng, "<p><b>" + timestamp + "</b></p><p>" + checkInData['message'].replace('\n','<br>') + "</p><p>(" + gpsLat + "," + gpsLng + ")</p>");
+					markersByUuid[checkInData['uuid']] = addPoint(gpsLat, gpsLng, "<p><b>" + timestamp + "</b></p><p>" + (checkInData['message'] ? checkInData['message'].replace('\n','<br>') : "") + "</p><p>(" + gpsLat + "," + gpsLng + ")</p>");
 				});
 
 				let lastRow = _.last(data);

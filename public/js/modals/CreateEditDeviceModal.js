@@ -134,16 +134,15 @@ function CreateEditDeviceModal(opts) {
 	let setObject = function(object) {
 		this.element.find('#name').val(object['name']);
 		this.element.find('#description').val(object['description']);
-		this.element.find('#phoneNumber').val(convertPhoneNumberToE164(object['phoneNumber']).replace('+1',''));
+		if (object['phoneNumber']) {
+			this.element.find('#phoneNumber').val(convertPhoneNumberToE164(object['phoneNumber']).replace('+1',''));
+		}
 	}.bind(this);
 
 	let validate = function(object) {
 		let errors = [];
 		if (_.trim(object['name']).length === 0) {
 			errors.push({ msg: 'Name is required.', sel: '#name' });
-		}
-		if (_.trim(object['phoneNumber']).length === 0) {
-			errors.push({ msg: 'Phone number is required.', sel: '#phoneNumber' });
 		}
 		return errors;
 	};
