@@ -123,15 +123,15 @@ function CreateEditDeviceModal(opts) {
 		this.element.modal('hide');
 	}.bind(this);
 
-	let getObject = function() {
-		let device = opts.object || {};
+	const getObject = function() {
+		const device = opts.object || {};
 		device['name'] = this.element.find('#name').val();
 		device['description'] = this.element.find('#description').val();
 		device['phoneNumber'] = this.element.find('#phoneNumber').val();
 		return device;
 	}.bind(this);
 
-	let setObject = function(object) {
+	const setObject = function(object) {
 		this.element.find('#name').val(object['name']);
 		this.element.find('#description').val(object['description']);
 		if (object['phoneNumber']) {
@@ -139,29 +139,30 @@ function CreateEditDeviceModal(opts) {
 		}
 	}.bind(this);
 
-	let validate = function(object) {
-		let errors = [];
+	const validate = function(object) {
+		const errors = [];
 		if (_.trim(object['name']).length === 0) {
 			errors.push({ msg: 'Name is required.', sel: '#name' });
 		}
+		// Add other errors as necessary
 		return errors;
 	};
 
-	let addError = function(errMsg) {
+	const addError = function(errMsg) {
 		$errorContainer.removeClass('hide');
 		$errorContainer.find('ul').append($("<li>").text(errMsg));
 	}.bind(this);
 
-	let clearErrors = function() {
+	const clearErrors = function() {
 		$errorContainer.addClass('hide');
 		$errorContainer.find('ul > li').remove();
 	}.bind(this);
 
-	let addHighlightToField = function(selector,_class) {
+	const addHighlightToField = function(selector,_class) {
 		this.element.find(selector).closest('.form-group').addClass(_class);
 	}.bind(this);
 
-	let clearHighlightFromField = function(selector) {
+	const clearHighlightFromField = function(selector) {
 		this.element.find(selector).closest('.form-group').removeClass('has-warning has-success has-error');
 	}.bind(this);
 }

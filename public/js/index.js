@@ -21,13 +21,15 @@ let map;
 let markersByUuid = {};
 
 $(window).on('load',function() {
+	const dateFormat = 'YYYY-MM-DD';
+
 	map = new google.maps.Map(document.getElementById('map-canvas'), {
 		zoom: 11,
 		mapTypeId: google.maps.MapTypeId.ROADMAP,
 		center: new google.maps.LatLng(43.611719617742835,-116.46400451660156) // Boise metro area
 	});
 
-	let checkInsListWidget = new CheckInsListWidget($("#checkInsListWidget"),{
+	const checkInsListWidget = new CheckInsListWidget($("#checkInsListWidget"),{
 		onViewOnMapClick: function(checkInData) {
 			let uuid = checkInData['uuid'];
 			let marker = markersByUuid[uuid];
@@ -40,34 +42,70 @@ $(window).on('load',function() {
 		}
 	});
 
-	$.ajax({
-		method: 'get',
-		url: '/api/location',
-		success: function(data) {
-			if (_.isArray(data) && data.length > 0) {
-				_.each(data,function(checkInData) {
-					checkInsListWidget.addCheckIn(checkInData);
+	function loadCheckIns(startDate, endDate) {
+		$.ajax({
+			method: 'get',
+			url: '/api/location',
+			data: {
+				startDate: startDate,
+				endDate: endDate
+			},
+			success: function(data) {
+				if (_.isArray(data) && data.length > 0) {
+					_.each(data,function(checkInData) {
+						checkInsListWidget.addCheckIn(checkInData);
 
-					let gpsLat = checkInData['lat'];
-					let gpsLng = checkInData['lng'];
-					let timestamp = moment.utc(checkInData['timestamp'],"YYYY-MM-DD HH:mm:ss").tz(TIMEZONE).format("MMM DD, YYYY hh:mm:ss A");
-					markersByUuid[checkInData['uuid']] = addPoint(gpsLat, gpsLng, "<p><b>" + timestamp + "</b></p><p>" + (checkInData['message'] ? checkInData['message'].replace('\n','<br>') : "") + "</p><p>(" + gpsLat + "," + gpsLng + ")</p>");
-				});
+						let gpsLat = checkInData['lat'];
+						let gpsLng = checkInData['lng'];
+						let timestamp = moment.utc(checkInData['timestamp'],"YYYY-MM-DD HH:mm:ss").tz(TIMEZONE).format("MMM DD, YYYY hh:mm:ss A");
+						markersByUuid[checkInData['uuid']] = addPoint(gpsLat, gpsLng, "<p><b>" + timestamp + "</b></p><p>" + (checkInData['message'] ? checkInData['message'].replace('\n','<br>') : "") + "</p><p>(" + gpsLat + "," + gpsLng + ")</p>");
+					});
 
-				let lastRow = _.last(data);
-				let marker = markersByUuid[lastRow['uuid']];
-				//clearMarkersFromMap(_.values(markersByUuid));
-				centerMap(marker);
-				openInfoWindowForMarker(marker);
+					let lastRow = _.last(data);
+					let marker = markersByUuid[lastRow['uuid']];
+					//clearMarkersFromMap(_.values(markersByUuid));
+					centerMap(marker);
+					openInfoWindowForMarker(marker);
+				}
+			},
+			error: function() {
+				alert('Unable to fetch locations');
 			}
+		});
+	}
+
+	$("[data-role='daterangepicker']").daterangepicker({
+		showDropdowns: true,
+		ranges: {
+			'Today': [moment().startOf('day'), moment().endOf('day')],
+			'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+			'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+			'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+			'This Month': [moment().startOf('month'), moment().endOf('month')],
+			'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+			'YTD': [moment().startOf('year'), moment().endOf('year')]
 		},
-		error: function() {
-			alert('Unable to fetch locations');
-		}
+		startDate: moment().startOf('year'),
+		endDate: moment().endOf('year')
+	}).on('apply.daterangepicker',function(ev,picker) {
+		console.log(arguments);
+
+		const startDate = picker.startDate.format(dateFormat);
+		const endDate = picker.endDate.format(dateFormat);
+
+		resetAndLoad(startDate, endDate);
 	});
+
+	function resetAndLoad(startDate, endDate) {
+		clearMarkersFromMap(_.values(markersByUuid));
+		loadCheckIns(startDate, endDate);
+		checkInsListWidget.clear();
+	}
+
+	resetAndLoad(moment().startOf('year').format(dateFormat), moment().endOf('year').format(dateFormat));
 });
 
-let deleteLocationByUuid = function(uuid) {
+function deleteLocationByUuid(uuid) {
 	return new Promise(function(resolve, reject) {
 		$.ajax({
 			method: 'delete',
@@ -79,9 +117,9 @@ let deleteLocationByUuid = function(uuid) {
 };
 
 function clearMarkersFromMap(markers) {
-	// _.each(markers,function(marker) {
-	// 	marker.setMap(null);
-	// });
+	_.each(markers,function(marker) {
+		marker.setMap(null);
+	});
 }
 
 function openInfoWindowForMarker(marker) {
@@ -110,14 +148,14 @@ function centerMap(marker) {
 }
 
 function addPoint(lat,lng,infoWindowData) {
-	let position = new google.maps.LatLng(lat,lng);
+	const position = new google.maps.LatLng(lat,lng);
 	// https://developers.google.com/maps/documentation/javascript/reference#MarkerOptions
-	let marker = new google.maps.Marker({
+	const marker = new google.maps.Marker({
 		map: map,
 		position: position,
 		title: lat + ", " + lng
 	});
-	let infoWindow = new google.maps.InfoWindow({
+	const infoWindow = new google.maps.InfoWindow({
 		content: infoWindowData
 	});
 	google.maps.event.addListener(marker, 'click', function() {

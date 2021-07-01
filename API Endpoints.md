@@ -9,6 +9,7 @@
 | Device | PUT | /api/device/:uuid | Updates a device given a :uuid. Returns 200 (OK) status code on success. |
 | Device | DELETE | /api/device/:uuid | Deletes a device given a :uuid. Returns 204 (No Content) status code on success. |
 | | POST | /twilio | Endpoint for Twilio. |
+| | POST | /upload | Endpoint for custom integrations. |
 
 #### GpsCheckInLocation fields
 ###### (See models/GpsCheckInLocation.js for more information)
@@ -29,4 +30,4 @@
 - uuid (read-only) - Unique identifier for this record.
 - name - Name of the device, 45 character maximum. Required.
 - description - Description of the device / friendly name / additional notes. Optional.
-- phoneNumber - Phone number associated with this device. Stored in E.164 format in the database. Required.
+- phoneNumber - Phone number associated with this device. Stored in E.164 format in the database. Not required for custom integrations.

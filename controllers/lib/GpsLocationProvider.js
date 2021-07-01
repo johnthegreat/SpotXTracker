@@ -61,6 +61,18 @@ GpsLocationProvider.prototype.getGpsLocations = function() {
 	});
 };
 
+GpsLocationProvider.prototype.getGpsLocationsByDateRange = function(startDate, endDate) {
+	return new Promise(function(resolve, reject) {
+		db.all('SELECT * FROM `gpsCheckIn` WHERE `timestamp` BETWEEN ? AND ?',[startDate,endDate],function(err,records) {
+			if (err) {
+				return reject(err);
+			}
+
+			resolve(_.map(records,GpsCheckInLocation.create));
+		});
+	});
+}
+
 /**
  *
  * @param uuid

@@ -19,9 +19,26 @@
 const _ = require('lodash');
 const gpsLocationProvider = require('../lib/GpsLocationProvider');
 
+const getDateFieldFromQuery = function(req, name) {
+	if (_.has(req.query, name) &&
+		_.isString(req.query[name]) &&
+		/\d{4}-\d{2}-\d{2}/.test(req.query[name])) {
+		return req.query[name];
+	}
+	return null;
+}
+
 exports.getLocations = async function(req,res) {
 	try {
-		res.status(200).send(await gpsLocationProvider.getGpsLocations());
+		let locations;
+		const startDate = getDateFieldFromQuery(req, 'startDate');
+		const endDate = getDateFieldFromQuery(req, 'endDate');
+		if (startDate && endDate) {
+			locations = await gpsLocationProvider.getGpsLocationsByDateRange(startDate,endDate);
+		} else {
+			locations = await gpsLocationProvider.getGpsLocations();
+		}
+		res.status(200).send(locations);
 	} catch (err) {
 		console.error(err);
 		res.status(500).send('Internal Error');
@@ -32,6 +49,7 @@ exports.deleteLocation = async function(req,res) {
 	const uuid = req.params.uuid;
 	if (_.isEmpty(uuid)) {
 		res.status(400).send();
+		return;
 	}
 
 	try {

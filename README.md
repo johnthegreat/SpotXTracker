@@ -2,6 +2,8 @@
 
 Upload, track, and share your Spot X's coordinates.
 
+https://github.com/johnthegreat/SpotXTracker
+
 ### Motivation
 
 - Because... integrations are cool!

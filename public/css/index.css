@@ -8,6 +8,15 @@ html, body {
     width: 100%;
 }
 
+/* https://www.itsupportguides.com/knowledge-base/tech-tips-tricks/how-to-hide-urlhref-when-printing-bootstrap-website/ */
+/* https://stackoverflow.com/questions/7301989/need-to-remove-href-values-when-printing-in-chrome */
+
+@media print {
+    a[href]:after {
+        content: none !important;
+    }
+}
+
 #checkInsListWidget {
     margin-top: 20px;
 }
@@ -19,4 +28,13 @@ a[data-role='viewOnMapBtn'] {
 a[data-role='deleteBtn'] {
     cursor: pointer;
     color: #ff0000;
+}
+
+.no-padding {
+    padding: 0;
+}
+
+.nowrap {
+    white-space: nowrap;
+    vertical-align: top;
 }

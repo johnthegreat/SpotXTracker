@@ -80,7 +80,7 @@ exports.postLogin = function(req,res) {
  */
 exports.getLogout = function(req,res) {
 	if (req.session) {
-		req.session.destroy((err) => {
+		req.session.destroy(function(err) {
 			if (err) {
 				console.log('Error : Failed to destroy the session during logout.',err);
 			}

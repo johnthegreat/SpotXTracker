@@ -7,7 +7,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.7/handlebars.min.js" integrity="sha512-RNLkV3d+aLtfcpEyFG8jRbnWHxUqVZozacROI4J2F1sTaDqo1dPQYs01OMi1t1w9Y2FdbSCDSQ2ZVdAC8bzgAg==" crossorigin="anonymous"></script>
 
 <script>
-	const TIMEZONE = "{{TIMEZONE}}";
+	const TIMEZONE = '{{TIMEZONE}}';
 </script>
 <script src="/js/modals/ConfirmActionModal{{#eq env 'production'}}.min{{/eq}}.js"></script>
 <script src="/js/widgets/Component.CheckInsListWidget{{#eq env 'production'}}.min{{/eq}}.js"></script>
@@ -17,20 +17,37 @@
 	<h1>Check-Ins</h1>
 	<div id="map-canvas"></div>
 
-	<div id="checkInsListWidget" class="table-responsive">
-		<table class="table table-bordered table-striped">
-			<thead>
-				<tr>
-					<th>Source</th>
-					<th>Message</th>
-					<th>Position</th>
-					<th>Timestamp</th>
-					<th>Map URL</th>
-					<th>View</th>
-					<th>Delete</th>
-				</tr>
-			</thead>
-			<tbody></tbody>
-		</table>
+	<div id="checkInsListWidget">
+		<div class="row" style="padding: 1rem 0;">
+			<div class="col-md-3">
+				<input type="text" class="form-control" data-role="daterangepicker">
+			</div>
+		</div>
+
+		<div class="table-responsive">
+			<table class="table table-bordered table-striped">
+				<thead>
+					<tr>
+						<th class="hidden-print"></th>
+						<th class="nowrap">Source</th>
+						<th>Message</th>
+						<th>Position</th>
+						<th>Timestamp</th>
+						<th class="hidden-print"></th>
+					</tr>
+				</thead>
+				<tbody></tbody>
+			</table>
+		</div>
+
+		<div>
+			<button class="no-padding hidden-print btn-link" id="selectAllBtn">Select All</button>
+
+			<button class="no-padding hidden-print btn-link" id="deselectAllBtn">Deselect All</button>
+		</div>
+
+		<div>
+			<button class="btn btn-danger hidden-print" id="bulkDeleteBtn" disabled>Delete</button>
+		</div>
 	</div>
 </div>

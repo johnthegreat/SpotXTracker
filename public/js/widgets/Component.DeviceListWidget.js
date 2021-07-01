@@ -22,9 +22,9 @@ const DeviceListWidget = function(element) {
 
 	this.element = element;
 
-	let devicesByUuid = {};
+	const devicesByUuid = {};
 
-	let deviceRowTemplate = Handlebars.compile("<tr data-id=\"\{{uuid}}\"><td>\{{name}}</td><td>\{{description}}</td><td>\{{phoneNumber}}</td><td><a data-role=\"editBtn\">Edit</a> <a data-role=\"deleteBtn\">Delete</a></td></tr>");
+	const deviceRowTemplate = Handlebars.compile("<tr data-id=\"\{{uuid}}\"><td>\{{name}}</td><td>\{{description}}</td><td>\{{phoneNumber}}</td><td class=\"hidden-print\"><a data-role=\"editBtn\">Edit</a> <a data-role=\"deleteBtn\">Delete</a></td></tr>");
 	this.addDevice = function(device) {
 		devicesByUuid[device['uuid']] = _.clone(device);
 		if (device['phoneNumber']) {
@@ -47,9 +47,9 @@ const DeviceListWidget = function(element) {
 	}.bind(this);
 
 	this.element.on('click','tr a[data-role="editBtn"]',function(e) {
-		let uuid = $(e.target).closest('tr').attr('data-id');
+		const uuid = $(e.target).closest('tr').attr('data-id');
 
-		let createEditDeviceModal = new CreateEditDeviceModal({
+		const createEditDeviceModal = new CreateEditDeviceModal({
 			mode: 'Edit',
 			object: devicesByUuid[uuid],
 			title: 'Update Device',
@@ -69,9 +69,9 @@ const DeviceListWidget = function(element) {
 	}.bind(this));
 
 	this.element.on('click','tr a[data-role="deleteBtn"]',function(e) {
-		let uuid = $(e.target).closest('tr').attr('data-id');
+		const uuid = $(e.target).closest('tr').attr('data-id');
 
-		let confirmActionModal = new ConfirmActionModal({
+		const confirmActionModal = new ConfirmActionModal({
 			title: 'Delete Device',
 			message: 'Are you sure you want to delete this device?',
 			saveCallback: function() {

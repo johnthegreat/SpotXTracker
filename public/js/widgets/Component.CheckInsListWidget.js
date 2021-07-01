@@ -20,14 +20,15 @@
 const CheckInsListWidget = function(element,opts) {
 	'use strict';
 
-	let widget = this;
+	const widget = this;
 	let checkInsByUuid = {};
 	opts = _.extend({
 		onViewOnMapClick: _.noop
 	},opts);
 
 	this.element = element;
-	let checkInTemplate = Handlebars.compile("<tr data-id=\"{{uuid}}\"><td>\{{source}}</td><td>\{{message}}</td><td>(<a href=\"https://www.google.com/maps/search/?api=1&query=\{{lat}},%20\{{lng}}\" target=\"_blank\">\{{lat}}, \{{lng}}</a>)\{{#if altFeet}} @ \{{altFeet}} ft.\{{/if}}</td><td>\{{timestamp}}</td><td><a href=\"\{{mapUrl}}\" target=\"_blank\">\{{mapUrl}}</a></td><td><a data-role=\"viewOnMapBtn\">View</a></td><td><a data-role=\"deleteBtn\">Delete</a></td></tr>");
+	const $bulkDeleteBtn = this.element.find('#bulkDeleteBtn');
+	const checkInTemplate = Handlebars.compile("<tr data-id=\"{{uuid}}\"><td class=\"hidden-print\"><input type=\"checkbox\" name=\"checkboxes[]\"></td><td class=\"nowrap\">\{{source}}</td><td>\{{message}}</td><td>(<a href=\"https://www.google.com/maps/search/?api=1&query=\{{lat}},%20\{{lng}}\" target=\"_blank\" rel=\"noopener noreferrer\">\{{lat}}, \{{lng}}</a>)\{{#if altFeet}} @ \{{altFeet}} ft.\{{/if}}</td><td>\{{timestamp}}</td></td><td class=\"hidden-print\"><button class=\"btn btn-sm btn-default\" data-role=\"viewOnMapBtn\">View</button> <button class=\"btn btn-sm btn-danger\" data-role=\"deleteBtn\">Delete</button></td></tr>");
 	this.addCheckIn = function(checkInData) {
 		checkInData = _.clone(checkInData);
 		checkInsByUuid[checkInData['uuid']] = checkInData;
@@ -43,16 +44,16 @@ const CheckInsListWidget = function(element,opts) {
 		this.element.find('table > tbody > tr[data-id="' + uuid + '"]').remove();
 	}.bind(this);
 
-	this.element.on('click','a[data-role="viewOnMapBtn"]',function(e) {
-		let uuid = $(e.target).closest("tr[data-id]").attr("data-id");
+	this.element.on('click','button[data-role="viewOnMapBtn"]',function(e) {
+		const uuid = $(e.target).closest("tr[data-id]").attr("data-id");
 		if (_.isFunction(opts.onViewOnMapClick)) {
 			opts.onViewOnMapClick(checkInsByUuid[uuid]);
 		}
 	}.bind(this));
 
-	this.element.on('click','a[data-role="deleteBtn"]',function(e) {
-		let uuid = $(e.target).closest("tr[data-id]").attr("data-id");
-		let confirmActionModal = new ConfirmActionModal({
+	this.element.on('click','button[data-role="deleteBtn"]',function(e) {
+		const uuid = $(e.target).closest("tr[data-id]").attr("data-id");
+		const confirmActionModal = new ConfirmActionModal({
 			title: 'Delete Check In',
 			message: 'Are you sure you would like to delete this check in?',
 			saveCallback: function() {
@@ -67,4 +68,74 @@ const CheckInsListWidget = function(element,opts) {
 			confirmActionModal.show();
 		});
 	});
+
+	this.getSelectedIds = function() {
+		return this.element.find('tr[data-id] input[type="checkbox"]:checked').map(function(idx, el) {
+			return $(el).closest('tr[data-id]').attr('data-id');
+		});
+	};
+
+	this.selectAll = function() {
+		this.element.find('tr[data-id] input[type="checkbox"]').each(function(idx, el) {
+			$(el).prop('checked', true);
+		});
+	};
+
+	this.deselectAll = function() {
+		this.element.find('tr[data-id] input[type="checkbox"]').each(function(idx, el) {
+			$(el).prop('checked', false);
+		});
+	};
+
+	this.clear = function() {
+		checkInsByUuid = {};
+		this.element.find('tbody > tr[data-id]').remove();
+	}.bind(this);
+
+	function toggleDeleteBtn() {
+		if (widget.getSelectedIds().length > 0) {
+			$bulkDeleteBtn.removeAttr('disabled');
+		} else {
+			$bulkDeleteBtn.attr('disabled', 'disabled');
+		}
+	}
+
+	this.element.on('change','tr[data-id] input[type="checkbox"]',function(e) {
+		toggleDeleteBtn();
+	});
+
+	$bulkDeleteBtn.on('click', function() {
+		const uuids = widget.getSelectedIds();
+
+		const confirmActionModal = new ConfirmActionModal({
+			title: 'Confirm Delete Check Ins',
+			message: 'Are you sure you would like to delete these check ins?',
+			saveCallback: function() {
+				async.series(_.map(uuids, function(uuid) {
+					return function(next) {
+						deleteLocationByUuid(uuid).then(function() {
+							widget.deleteCheckInByUuid(uuid);
+							next();
+						}).catch(function(err) {
+							console.log(err);
+							next(err);
+						});
+					}
+				}));
+			}
+		});
+		confirmActionModal.load().then(function() {
+			confirmActionModal.show();
+		});
+	});
+
+	$('#selectAllBtn').on('click', function() {
+		this.selectAll();
+		toggleDeleteBtn();
+	}.bind(this));
+
+	$('#deselectAllBtn').on('click', function() {
+		this.deselectAll();
+		toggleDeleteBtn();
+	}.bind(this));
 };
